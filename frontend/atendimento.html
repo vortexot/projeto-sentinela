@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atendimento — Hospital São Lucas</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body data-pagina="atendimento">
+<main class="page" style="max-width:560px">
+  <div class="page-head">
+    <h1>Atendimento</h1>
+    <p>Cadastre o paciente para encaminhá-lo à triagem.</p>
+  </div>
+
+  <form class="card" id="form" novalidate>
+    <div class="field"><label for="nome">Nome completo</label><input id="nome" autocomplete="off" required></div>
+    <div class="field"><label for="cpf">CPF</label><input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off"></div>
+    <div class="field">
+      <label for="tipo">Tipo de atendimento</label>
+      <select id="tipo"><option>Particular</option><option>Convenio</option></select>
+    </div>
+    <button class="btn btn-block" id="salvar" type="submit">Cadastrar e enviar para triagem</button>
+  </form>
+</main>
+
+<script src="js/app.js"></script>
+<script>
+  const cpf = document.getElementById("cpf");
+  cpf.addEventListener("input", () => {
+    const d = cpf.value.replace(/\D/g, "").slice(0, 11);
+    cpf.value = d.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  });
+
+  document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById("nome").value.trim();
+    if (!nome) return alert("⚠️ Informe o nome do paciente.");
+
+    const botao = document.getElementById("salvar");
+    botao.disabled = true;
+    try {
+      const r = await fetch("/atendimento", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, cpf: cpf.value, tipo: document.getElementById("tipo").value })
+      });
+      if (!r.ok) throw new Error();
+      alert("✅ " + nome + " foi enviado para a triagem.");
+      e.target.reset();
+      document.getElementById("nome").focus();
+    } catch {
+      alert("❌ Não foi possível cadastrar o paciente.");
+    } finally {
+      botao.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital São Lucas - Painel de Chamadas</title>
+
+    <style>
+        :root {
+            --primary: #14b8a6;
+            --primary-dark: #0f766e;
+            --background: #eaf5f5;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #d1d5db;
+            --danger: #dc2626;
+            --shadow: 0 8px 25px rgba(15, 118, 110, 0.10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dbeafe, #ecfeff, #dcfce7);
+            padding: 2.5vh 2.5vw;
+            overflow: hidden;
+            color: var(--text);
+        }
+
+        .tv-container {
+            width: 100%;
+            height: 95vh;
+            display: grid;
+            grid-template-columns: 35% 65%;
+            gap: 18px;
+        }
+
+        .left-panel,
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        .box {
+            background: var(--surface);
+            border: 2px solid rgba(20, 184, 166, 0.15);
+            border-radius: 22px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow);
+            min-width: 0;
+        }
+
+        .box-title {
+            color: var(--primary-dark);
+            font-size: clamp(18px, 2vw, 30px);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 18px;
+        }
+
+        /* LOCAL */
+
+        .local-box {
+            flex: 1;
+            background: linear-gradient(145deg, #ffffff, #f0fdfa);
+        }
+
+        .local-number {
+            color: var(--primary-dark);
+            font-size: clamp(70px, 9vw, 140px);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .local-description {
+            color: var(--muted);
+            font-size: clamp(15px, 1.5vw, 23px);
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        /* HISTÓRICO */
+
+        .history-box {
+            flex: 1;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        .history-box .box-title {
+            font-size: clamp(16px, 1.7vw, 25px);
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .history-list {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .history-list li {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            border-radius: 12px;
+            padding: 13px;
+            color: var(--primary-dark);
+            font-size: clamp(13px, 1.3vw, 20px);
+            font-weight: 700;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .history-empty {
+            color: var(--muted) !important;
+            text-align: center !important;
+            background: #f8fafc !important;
+            border-color: var(--border) !important;
+        }
+
+        /* PACIENTE */
+
+        .patient-box {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(145deg, #ffffff, #f0fdfa);
+            overflow: hidden;
+        }
+
+        .hospital-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            width: clamp(55px, 6vw, 90px);
+            height: clamp(55px, 6vw, 90px);
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .logo-text {
+            color: var(--primary-dark);
+            font-size: clamp(23px, 3.2vw, 48px);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hospital-subtitle {
+            color: var(--muted);
+            font-size: clamp(12px, 1.2vw, 18px);
+            margin-top: 7px;
+        }
+
+        .patient-box .box-title {
+            color: var(--muted);
+            font-size: clamp(22px, 2.5vw, 38px);
+            margin-bottom: 25px;
+        }
+
+        .patient-name {
+            color: var(--primary-dark);
+            font-size: clamp(35px, 6.5vw, 95px);
+            font-weight: 900;
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+            max-width: 100%;
+        }
+
+        .waiting {
+            color: #94a3b8;
+            font-size: clamp(30px, 5vw, 70px);
+        }
+
+        .call-status {
+            margin-top: 35px;
+            color: var(--muted);
+            font-size: clamp(14px, 1.4vw, 21px);
+            font-weight: 600;
+        }
+
+        /* NOVA CHAMADA */
+
+        @keyframes flash {
+            0%, 100% {
+                background: linear-gradient(145deg, #ffffff, #f0fdfa);
+            }
+
+            50% {
+                background: #ccfbf1;
+            }
+        }
+
+        .flash {
+            animation: flash 0.5s ease 4;
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media (max-width: 800px) {
+            body {
+                padding: 12px;
+                overflow: auto;
+            }
+
+            .tv-container {
+                height: auto;
+                min-height: 95vh;
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                flex-direction: row;
+            }
+
+            .local-box,
+            .history-box {
+                min-height: 200px;
+            }
+
+            .patient-box {
+                min-height: 400px;
+                padding: 25px 15px;
+            }
+
+            .hospital-header {
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .left-panel {
+                flex-direction: column;
+            }
+
+            .local-box {
+                min-height: 180px;
+            }
+
+            .history-box {
+                min-height: 180px;
+            }
+
+            .patient-box {
+                min-height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="tv-container">
+
+        <!-- PAINEL ESQUERDO -->
+        <section class="left-panel">
+
+            <!-- LOCAL -->
+            <div class="box local-box">
+
+                <div class="box-title" id="local-tipo">
+                    GUICHÊ
+                </div>
+
+                <div class="local-number" id="local-numero">
+                    --
+                </div>
+
+                <div class="local-description">
+                    LOCAL DE ATENDIMENTO
+                </div>
+
+            </div>
+
+            <!-- HISTÓRICO -->
+            <div class="box history-box">
+
+                <div class="box-title">
+                    ÚLTIMAS CHAMADAS
+                </div>
+
+                <ul class="history-list" id="history-list">
+                    <li class="history-empty">
+                        Nenhuma chamada registrada
+                    </li>
+                </ul>
+
+            </div>
+
+        </section>
+
+        <!-- PAINEL DIREITO -->
+        <section class="right-panel">
+
+            <div class="box patient-box">
+
+                <div class="hospital-header">
+
+                    <img
+                        src="img/logo.jpg"
+                        alt="Logo do Hospital São Lucas"
+                        class="logo"
+                    >
+
+                    <div class="logo-text">
+                        Hospital São Lucas
+                    </div>
+
+                    <div class="hospital-subtitle">
+                        Sistema de Gestão Hospitalar
+                    </div>
+
+                </div>
+
+                <div class="box-title">
+                    PACIENTE
+                </div>
+
+                <div class="patient-name waiting" id="patient-name">
+                    AGUARDANDO...
+                </div>
+
+                <div class="call-status" id="call-status">
+                    Aguarde sua chamada.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        let ultimoId = null;
+
+        const elementos = {
+            localTipo: document.getElementById("local-tipo"),
+            localNumero: document.getElementById("local-numero"),
+            paciente: document.getElementById("patient-name"),
+            historico: document.getElementById("history-list"),
+            status: document.getElementById("call-status"),
+            painel: document.querySelector(".patient-box")
+        };
+
+        function atualizar() {
+
+            fetch("/tv/chamada")
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error("Erro HTTP: " + response.status);
+                    }
+
+                    return response.json();
+                })
+
+                .then(data => {
+
+                    const chamada = data.chamada;
+                    const historico = data.historico || [];
+
+                    // CHAMADA ATUAL
+
+                    if (chamada) {
+
+                        elementos.localTipo.innerText =
+                            chamada.localTipo || "GUICHÊ";
+
+                        elementos.localNumero.innerText =
+                            chamada.localNumero || "--";
+
+                        elementos.paciente.innerText =
+                            chamada.paciente || "AGUARDANDO...";
+
+                        elementos.paciente.classList.remove("waiting");
+
+                        elementos.status.innerText =
+                            "Dirija-se ao local indicado para atendimento.";
+
+                        // IDENTIFICA UMA NOVA CHAMADA
+
+                        if (chamada.id !== ultimoId) {
+
+                            ultimoId = chamada.id;
+
+                            elementos.painel.classList.remove("flash");
+
+                            void elementos.painel.offsetWidth;
+
+                            elementos.painel.classList.add("flash");
+                        }
+
+                    } else {
+
+                        elementos.localTipo.innerText = "GUICHÊ";
+                        elementos.localNumero.innerText = "--";
+
+                        elementos.paciente.innerText = "AGUARDANDO...";
+                        elementos.paciente.classList.add("waiting");
+
+                        elementos.status.innerText =
+                            "Aguarde sua chamada.";
+
+                        ultimoId = null;
+                    }
+
+                    // HISTÓRICO
+
+                    elementos.historico.innerHTML = "";
+
+                    const ultimasChamadas = historico.slice(0, 4);
+
+                    if (ultimasChamadas.length === 0) {
+
+                        const li = document.createElement("li");
+
+                        li.className = "history-empty";
+                        li.innerText = "Nenhuma chamada registrada";
+
+                        elementos.historico.appendChild(li);
+
+                    } else {
+
+                        ultimasChamadas.forEach(h => {
+
+                            const li = document.createElement("li");
+
+                            const tipo = h.localTipo || "GUICHÊ";
+                            const numero = h.localNumero || "--";
+                            const paciente = h.paciente || "";
+
+                            li.innerText =
+                                `${tipo} ${numero} - ${paciente}`;
+
+                            elementos.historico.appendChild(li);
+                        });
+                    }
+
+                })
+
+                .catch(error => {
+                    console.error("Erro ao atualizar painel:", error);
+                    elementos.status.innerText =
+                        "Reconectando ao sistema...";
+                });
+        }
+
+        // PRIMEIRA ATUALIZAÇÃO
+        atualizar();
+
+        // ATUALIZA A CADA 2 SEGUNDOS
+        setInterval(atualizar, 2000);
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+/* ==========================================================
+   Hospital São Lucas — Design system compartilhado
+   ========================================================== */
+:root{
+  --brand:#0f766e; --brand-2:#14b8a6; --brand-soft:#ccfbf1;
+  --bg:#f1f5f9; --surface:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --danger:#dc2626; --warn:#d97706; --ok:#16a34a; --info:#0369a1;
+  --radius:14px; --shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --topbar-h:68px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid rgba(20,184,166,.45);outline-offset:2px}
+
+/* ---------- Barra superior ---------- */
+.topbar{position:fixed;inset:0 0 auto 0;z-index:50;height:var(--topbar-h);display:flex;align-items:center;gap:24px;padding:0 24px;background:linear-gradient(135deg,#0f766e,#115e59);color:#fff;box-shadow:0 2px 12px rgba(15,23,42,.18)}
+.topbar .marca{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;flex-shrink:0}
+.topbar .marca img{width:40px;height:40px;border-radius:50%;background:#fff;object-fit:cover;object-position:45% 30%;border:2px solid #fff}
+.topbar .marca strong{display:block;font-size:16px;line-height:1.1}
+.topbar .marca span{font-size:12px;opacity:.8}
+.topbar nav{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.topbar nav a{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;color:rgba(255,255,255,.85);text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;transition:background .15s}
+.topbar nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.topbar nav a.ativo{background:rgba(255,255,255,.2);color:#fff}
+.topbar .usuario{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar .avatar{width:36px;height:36px;border-radius:50%;background:var(--brand-2);display:grid;place-items:center;font-weight:700}
+.topbar .usuario b{display:block;font-size:13px;line-height:1.1}
+.topbar .usuario small{font-size:11px;opacity:.8}
+.topbar .btn-sair{width:auto;height:auto;margin:0;padding:8px 14px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer;box-shadow:none}
+.topbar .btn-sair:hover{background:rgba(255,255,255,.15);transform:none;box-shadow:none}
+
+/* Páginas antigas passam a respeitar a barra fixa e o mesmo fundo */
+body.com-shell{padding-top:calc(var(--topbar-h) + 28px)!important;background:var(--bg)!important;font-family:var(--font)}
+body.com-shell :where(h1,h2,h3,h4,p,label,input,select,textarea,button,a,span,li,td,th){font-family:var(--font)}
+
+/* ---------- Avisos (substituem alert) ---------- */
+#avisos{position:fixed;top:calc(var(--topbar-h) + 14px);right:16px;z-index:100;display:flex;flex-direction:column;gap:10px;max-width:min(380px,calc(100vw - 32px))}
+.aviso{padding:14px 16px;border-radius:12px;color:#fff;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(15,23,42,.25);animation:entra .25s ease}
+.aviso.ok{background:var(--ok)} .aviso.erro{background:var(--danger)} .aviso.alerta{background:var(--warn)} .aviso.info{background:var(--info)}
+@keyframes entra{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+@media(max-width:820px){
+  .topbar{gap:12px;padding:0 12px}
+  .topbar .marca div,.topbar .usuario div{display:none}
+}

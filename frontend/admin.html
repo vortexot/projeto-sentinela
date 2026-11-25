@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#126650">
+    <title>Cadastro de Usuários</title>
+
+    <style>
+        :root {
+            --fundo: #edf3f1;
+            --superficie: #ffffff;
+            --texto: #18332d;
+            --texto-suave: #62736d;
+            --verde: #126650;
+            --verde-escuro: #0d4e3d;
+            --verde-claro: #e6f3ed;
+            --borda: #d9e4de;
+            --raio: 14px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 48px 24px;
+            background: var(--fundo);
+            color: var(--texto);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: clamp(24px, 5vw, 56px);
+            background: var(--superficie);
+            border: 1px solid var(--borda);
+            border-top: 5px solid var(--verde);
+            border-radius: 22px;
+            box-shadow: 0 20px 60px rgb(24 51 45 / 7%);
+        }
+
+        .voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 44px;
+            margin-bottom: 28px;
+            padding: 8px 12px;
+            color: var(--verde);
+            background: var(--verde-claro);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 160ms ease,
+                        border-color 160ms ease;
+        }
+
+        .voltar::before {
+            content: "←";
+            font-size: 18px;
+        }
+
+        .voltar:hover {
+            background: #d8ebe1;
+            border-color: #b8d5c6;
+        }
+
+        h2 {
+            margin-bottom: 28px;
+            font-size: clamp(26px, 4vw, 36px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 650;
+            letter-spacing: -0.4px;
+        }
+
+        h3::before {
+            content: "";
+            flex: 0 0 4px;
+            height: 22px;
+            background: var(--verde);
+            border-radius: 4px;
+        }
+
+        #formUsuario {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        #formUsuario input,
+        #formUsuario select {
+            width: 100%;
+            min-width: 0;
+            min-height: 56px;
+            padding: 15px 17px;
+            color: var(--texto);
+            background: #f8faf9;
+            border: 1px solid var(--borda);
+            border-radius: var(--raio);
+            outline: none;
+            font-size: 16px;
+            transition: border-color 160ms ease,
+                        box-shadow 160ms ease,
+                        background-color 160ms ease;
+        }
+
+        #formUsuario input::placeholder {
+            color: #667970;
+            opacity: 1;
+        }
+
+        #formUsuario input:hover,
+        #formUsuario select:hover {
+            border-color: #a4bdb0;
+        }
+
+        #formUsuario input:focus,
+        #formUsuario select:focus {
+            background: #ffffff;
+            border-color: var(--verde);
+            box-shadow: 0 0 0 4px rgb(18 102 80 / 12%);
+        }
+
+        #formUsuario select {
+            cursor: pointer;
+        }
+
+        #formUsuario select:has(option:checked[value=""]) {
+            color: #667970;
+        }
+
+        #formUsuario button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
+            padding: 15px 24px;
+            color: #ffffff;
+            background: var(--verde);
+            border: 1px solid transparent;
+            border-radius: var(--raio);
+            font-weight: 650;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgb(18 102 80 / 12%);
+            transition: background-color 160ms ease,
+                        box-shadow 160ms ease,
+                        transform 160ms ease;
+        }
+
+        #formUsuario button:hover:not(:disabled) {
+            background: var(--verde-escuro);
+            box-shadow: 0 8px 18px rgb(18 102 80 / 18%);
+        }
+
+        #formUsuario button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        #formUsuario button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid var(--verde);
+            outline-offset: 4px;
+        }
+
+        .mensagem {
+            grid-column: 1 / -1;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .mensagem.erro {
+            color: #842029;
+            background: #f8d7da;
+            border: 1px solid #f1aeb5;
+        }
+
+        .mensagem.sucesso {
+            color: #0f5132;
+            background: #d1e7dd;
+            border: 1px solid #a3cfbb;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        hr {
+            margin: 36px 0;
+            border: 0;
+            border-top: 1px solid var(--borda);
+        }
+
+        #listaUsuarios {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            color: var(--texto-suave);
+            font-size: 14px;
+        }
+
+        #listaUsuarios .card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            padding: 20px;
+            background: #f8faf9;
+            border: 1px solid var(--borda);
+            border-radius: var(--raio);
+            transition: background-color 160ms ease,
+                        border-color 160ms ease;
+        }
+
+        #listaUsuarios .card::before {
+            content: "";
+            flex: 0 0 10px;
+            width: 10px;
+            height: 10px;
+            background: var(--verde);
+            border-radius: 50%;
+        }
+
+        #listaUsuarios .card:hover {
+            background: #f0f7f3;
+            border-color: #b4ccbf;
+        }
+
+        #listaUsuarios .card span {
+            min-width: 0;
+            color: var(--texto);
+            font-size: 14px;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .estado-lista {
+            grid-column: 1 / -1;
+            padding: 20px;
+            color: var(--texto-suave);
+            background: #f8faf9;
+            border: 1px dashed var(--borda);
+            border-radius: var(--raio);
+            text-align: center;
+        }
+
+        ::selection {
+            color: #ffffff;
+            background: var(--verde);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                padding: 26px 20px;
+                border-radius: 16px;
+            }
+
+            .voltar {
+                margin-bottom: 24px;
+            }
+
+            h2 {
+                margin-bottom: 24px;
+            }
+
+            #formUsuario,
+            #listaUsuarios {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            #formUsuario {
+                gap: 14px;
+            }
+
+            #listaUsuarios .card {
+                padding: 18px 16px;
+            }
+
+            hr {
+                margin: 28px 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="css/shell.css">
+<script src="js/app.js" defer></script>
+</head>
+
+<body data-pagina="admin" data-publica="true">
+    <main class="container">
+
+        <h2>Cadastrar usuário</h2>
+
+        <div
+            id="mensagem"
+            class="mensagem oculto"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <form id="formUsuario">
+            <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                placeholder="Nome de login"
+                aria-label="Nome de login"
+                autocomplete="username"
+                maxlength="100"
+                required
+            >
+
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Senha"
+                aria-label="Senha"
+                autocomplete="new-password"
+                required
+            >
+
+            <select
+                id="tipo"
+                name="tipo"
+                aria-label="Setor"
+                required
+            >
+                <option value="">Selecionar setor</option>
+                <option value="atendimento">Atendimento</option>
+                <option value="triagem">Triagem</option>
+                <option value="medico">Médico</option>
+                <option value="almoxarifado">Almoxarifado</option>
+                <option value="admin">Administrador</option>
+            </select>
+
+            <button type="submit" id="botaoCadastrar">
+                Cadastrar usuário
+            </button>
+        </form>
+
+        <hr>
+
+        <h3>Usuários cadastrados</h3>
+
+        <div
+            id="listaUsuarios"
+            aria-live="polite"
+            aria-busy="false"
+        >
+            <p class="estado-lista">Carregando usuários...</p>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = "/usuarios";
+
+        const form = document.getElementById("formUsuario");
+        const campoUsuario = document.getElementById("usuario");
+        const campoSenha = document.getElementById("senha");
+        const campoTipo = document.getElementById("tipo");
+        const botaoCadastrar = document.getElementById("botaoCadastrar");
+        const listaUsuarios = document.getElementById("listaUsuarios");
+        const mensagem = document.getElementById("mensagem");
+
+        function mostrarMensagem(texto, tipo = "erro") {
+            mensagem.textContent = texto;
+            mensagem.className = `mensagem ${tipo}`;
+        }
+
+        function esconderMensagem() {
+            mensagem.textContent = "";
+            mensagem.className = "mensagem oculto";
+        }
+
+        async function lerResposta(resposta) {
+            const texto = await resposta.text();
+
+            if (!texto) {
+                return {};
+            }
+
+            try {
+                return JSON.parse(texto);
+            } catch {
+                return { erro: texto };
+            }
+        }
+
+        form.addEventListener("submit", async function (evento) {
+            evento.preventDefault();
+            esconderMensagem();
+
+            const usuario = campoUsuario.value.trim();
+            const senha = campoSenha.value;
+            const tipo = campoTipo.value;
+
+            if (!usuario || !senha || !tipo) {
+                mostrarMensagem("Preencha todos os campos.");
+                return;
+            }
+
+            botaoCadastrar.disabled = true;
+            botaoCadastrar.textContent = "Cadastrando...";
+
+            try {
+                const resposta = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        usuario,
+                        senha,
+                        tipo
+                    })
+                });
+
+                const dados = await lerResposta(resposta);
+
+                if (!resposta.ok) {
+                    mostrarMensagem(
+                        "Erro ao cadastrar: " +
+                        (dados.erro || `HTTP ${resposta.status}`)
+                    );
+                    return;
+                }
+
+                form.reset();
+                mostrarMensagem(
+                    "Usuário cadastrado com sucesso!",
+                    "sucesso"
+                );
+
+                await carregarUsuarios();
+
+            } catch (erro) {
+                console.error("Falha no cadastro:", erro);
+
+                mostrarMensagem(
+                    "Não foi possível conectar ao servidor. " +
+                    "Verifique se a API Node.js está rodando na porta 3000."
+                );
+            } finally {
+                botaoCadastrar.disabled = false;
+                botaoCadastrar.textContent = "Cadastrar usuário";
+            }
+        });
+
+        async function carregarUsuarios() {
+            listaUsuarios.setAttribute("aria-busy", "true");
+            listaUsuarios.replaceChildren();
+
+            const carregando = document.createElement("p");
+            carregando.className = "estado-lista";
+            carregando.textContent = "Carregando usuários...";
+            listaUsuarios.appendChild(carregando);
+
+            try {
+                const resposta = await fetch(API_URL);
+
+                if (!resposta.ok) {
+                    throw new Error(`HTTP ${resposta.status}`);
+                }
+
+                const usuarios = await resposta.json();
+
+                if (!Array.isArray(usuarios)) {
+                    throw new Error("A API não retornou uma lista válida.");
+                }
+
+                listaUsuarios.replaceChildren();
+
+                if (usuarios.length === 0) {
+                    const vazio = document.createElement("p");
+                    vazio.className = "estado-lista";
+                    vazio.textContent = "Nenhum usuário cadastrado.";
+                    listaUsuarios.appendChild(vazio);
+                    return;
+                }
+
+                usuarios.forEach(function (usuario) {
+                    const card = document.createElement("div");
+                    card.className = "card";
+
+                    const texto = document.createElement("span");
+
+                    // textContent evita interpretar os dados como HTML.
+                    texto.textContent =
+                        `Usuário: ${usuario.usuario} | Setor: ${usuario.tipo}`;
+
+                    card.appendChild(texto);
+                    listaUsuarios.appendChild(card);
+                });
+
+            } catch (erro) {
+                console.error("Falha ao listar usuários:", erro);
+
+                listaUsuarios.replaceChildren();
+
+                const erroLista = document.createElement("p");
+                erroLista.className = "estado-lista";
+                erroLista.textContent =
+                    "Não foi possível carregar os usuários. " +
+                    "Verifique se o servidor está funcionando.";
+
+                listaUsuarios.appendChild(erroLista);
+
+            } finally {
+                listaUsuarios.setAttribute("aria-busy", "false");
+            }
+        }
+
+        // Carrega a lista assim que a página é aberta.
+        carregarUsuarios();
+    </script>
+</body>
+</html>

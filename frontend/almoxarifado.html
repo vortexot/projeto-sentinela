@@ -1,0 +1,1825 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almoxarifado — Hospital São Lucas</title>
+
+    <style>
+        :root {
+            --primary: #14b8a6;
+            --primary-dark: #0f766e;
+            --background: #f0fdfa;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #d1d5db;
+            --purple: #8b5cf6;
+            --green: #16a34a;
+            --orange: #f59e0b;
+            --red: #dc2626;
+            --shadow: 0 5px 20px rgba(15, 118, 110, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #dbeafe, #ecfeff, #dcfce7);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            width: 100%;
+            min-height: 85px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 5%;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            border-bottom: 3px solid var(--primary);
+            gap: 20px;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ccfbf1;
+            border-radius: 14px;
+            font-size: 27px;
+        }
+
+        .nav-brand h1 {
+            font-size: 21px;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .nav-brand span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-pill {
+            background: #ccfbf1;
+            color: var(--primary-dark);
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-nav {
+            text-decoration: none;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-nav:hover {
+            background: #fecaca;
+            transform: translateY(-2px);
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 35px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            font-size: 27px;
+            color: var(--primary-dark);
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* ALERTA */
+
+        .alerta-estoque {
+            display: none;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-left: 5px solid var(--orange);
+            color: #9a3412;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* ESTATÍSTICAS */
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid rgba(20, 184, 166, 0.12);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            box-shadow: var(--shadow);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            width: 53px;
+            height: 53px;
+            min-width: 53px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 24px;
+        }
+
+        .purple {
+            background: #ede9fe;
+        }
+
+        .green {
+            background: #dcfce7;
+        }
+
+        .orange {
+            background: #ffedd5;
+        }
+
+        .red {
+            background: #fee2e2;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ÁREA PRINCIPAL */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.5fr);
+            gap: 25px;
+            align-items: start;
+        }
+
+        .left-column,
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 18px;
+            border: 1px solid rgba(20, 184, 166, 0.12);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-header h2 {
+            color: var(--primary-dark);
+            font-size: 19px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* ABAS */
+
+        .entrada-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 10px;
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--primary-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* FORMULÁRIO */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .form-group small {
+            color: var(--muted);
+            font-weight: normal;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #f8fafc;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        /* BOTÕES */
+
+        .btn-full {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.2);
+        }
+
+        .btn-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(20, 184, 166, 0.25);
+        }
+
+        .btn-purple:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            border: none;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        /* PAINÉIS */
+
+        .painel-oculto {
+            display: none;
+        }
+
+        .painel-info {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            padding: 15px;
+            border-radius: 10px;
+            color: var(--primary-dark);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* PESQUISA */
+
+        .search-bar {
+            margin-bottom: 18px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 46px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 0 15px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* TABELA */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:hover {
+            background: #f0fdfa;
+        }
+
+        .med-name {
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .med-category {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .badge-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-low {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .badge-zero {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 35px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        /* HISTÓRICO */
+
+        .historico-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .historico-item:last-child {
+            border-bottom: none;
+        }
+
+        .historico-nome {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .historico-info {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .historico-qtd {
+            color: var(--primary-dark);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .historico-tipo {
+            font-size: 11px;
+            color: #0f766e;
+            background: #ccfbf1;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media (max-width: 1000px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 18px 5%;
+            }
+
+            .nav-brand h1 {
+                font-size: 16px;
+            }
+
+            .nav-user {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                width: 92%;
+                margin: 25px auto;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 14px;
+                gap: 10px;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                font-size: 19px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .stat-label {
+                font-size: 10px;
+            }
+
+            .card-body {
+                padding: 18px;
+            }
+
+            .entrada-tabs {
+                flex-direction: column;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="css/shell.css">
+<script src="js/app.js" defer></script>
+</head>
+
+<body data-pagina="almoxarifado">
+
+    <main class="container">
+
+        <div class="page-heading">
+            <h2>Painel do Almoxarifado</h2>
+            <p>Gerencie a entrada e acompanhe os níveis de estoque dos medicamentos.</p>
+        </div>
+
+        <!-- ALERTA -->
+        <div class="alerta-estoque" id="alertaEstoque">
+            ⚠️ <strong>Atenção:</strong>
+            <span id="alertaTexto"></span>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <section class="stats-bar">
+
+            <div class="stat-card">
+                <div class="stat-icon purple">📦</div>
+                <div>
+                    <div class="stat-value" id="statItens">0</div>
+                    <div class="stat-label">Tipos cadastrados</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">🟢</div>
+                <div>
+                    <div class="stat-value" id="statOk">0</div>
+                    <div class="stat-label">Estoque normal</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">⚠️</div>
+                <div>
+                    <div class="stat-value" id="statBaixo">0</div>
+                    <div class="stat-label">Estoque baixo (menos de 10)</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">🚫</div>
+                <div>
+                    <div class="stat-value" id="statZerado">0</div>
+                    <div class="stat-label">Zerado / Esgotado</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ÁREA PRINCIPAL -->
+        <section class="main-grid">
+
+            <!-- COLUNA ESQUERDA -->
+            <div class="left-column">
+
+                <!-- ENTRADA -->
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>📥 Entrada de medicamentos</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="entrada-tabs">
+
+                            <button
+                                class="tab-btn active"
+                                id="tabNovo"
+                                type="button"
+                                onclick="setTab('novo')">
+                                Novo medicamento
+                            </button>
+
+                            <button
+                                class="tab-btn"
+                                id="tabRepor"
+                                type="button"
+                                onclick="setTab('repor')">
+                                Repor existente
+                            </button>
+
+                        </div>
+
+                        <!-- CADASTRO -->
+                        <div id="painelNovo">
+
+                            <div class="painel-info">
+                                📋 Cadastre um novo medicamento e informe a quantidade inicial disponível no estoque.
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emNome">Nome do medicamento</label>
+
+                                <input
+                                    type="text"
+                                    id="emNome"
+                                    class="form-control"
+                                    placeholder="Ex: Paracetamol 750mg"
+                                    autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emQtd">Quantidade inicial</label>
+
+                                <input
+                                    type="number"
+                                    id="emQtd"
+                                    class="form-control"
+                                    value="10"
+                                    min="1"
+                                    step="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emUnidade">Tipo de unidade</label>
+
+                                <select id="emUnidade" class="form-control">
+                                    <option value="comprimidos">Comprimidos</option>
+                                    <option value="cápsulas">Cápsulas</option>
+                                    <option value="frascos">Frascos</option>
+                                    <option value="ampolas">Ampolas</option>
+                                    <option value="sachês">Sachês</option>
+                                    <option value="unidades">Unidades</option>
+                                    <option value=" caixas">Caixas</option>
+                                    <option value="litros">Litros</option>
+                                    <option value="ml">Mililitros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emCategoria">Categoria farmacológica</label>
+
+                                <select id="emCategoria" class="form-control">
+                                    <option value="analgesico/antipiretico">Analgésico / Antipirético</option>
+                                    <option value="antibiotico">Antibiótico</option>
+                                    <option value="anti-inflamatorio">Anti-inflamatório</option>
+                                    <option value="antialergico">Antialérgico</option>
+                                    <option value="protetor gastrico">Protetor gástrico</option>
+                                    <option value="antiespasmodico">Antiespasmódico</option>
+                                    <option value="antiemetico">Antiemético</option>
+                                    <option value="solucao">Solução</option>
+                                    <option value="vitaminas/suplemento">Vitaminas / Suplemento</option>
+                                    <option value="geral">Geral</option>
+                                </select>
+                            </div>
+
+                            <button
+                                class="btn-full btn-purple"
+                                type="button"
+                                onclick="darEntrada()">
+                                ➕ Cadastrar medicamento
+                            </button>
+
+                        </div>
+
+                        <!-- REPOSIÇÃO -->
+                        <div id="painelRepor" class="painel-oculto">
+
+                            <div class="painel-info">
+                                📦 Selecione um medicamento já cadastrado e informe a quantidade recebida.
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emMedicamentoExistente">Medicamento</label>
+
+                                <select
+                                    id="emMedicamentoExistente"
+                                    class="form-control">
+                                    <option value="">Selecione um medicamento</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emQtdRepor">Quantidade recebida</label>
+
+                                <input
+                                    type="number"
+                                    id="emQtdRepor"
+                                    class="form-control"
+                                    min="1"
+                                    step="1"
+                                    placeholder="Ex: 50">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emObs">Observação <small>(opcional)</small></label>
+
+                                <input
+                                    type="text"
+                                    id="emObs"
+                                    class="form-control"
+                                    placeholder="Ex: Nota fiscal NF-001">
+                            </div>
+
+                            <button
+                                class="btn-full btn-purple"
+                                type="button"
+                                onclick="reporEstoque()">
+                                📥 Adicionar ao estoque
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- HISTÓRICO -->
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>📋 Últimas entradas</h2>
+
+                        <button
+                            class="btn-secondary"
+                            type="button"
+                            onclick="carregarHistoricoEntradas()">
+                            🔄 Atualizar
+                        </button>
+                    </div>
+
+                    <div class="card-body" id="historicoEntradas">
+
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <p>Nenhuma entrada registrada ainda.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- COLUNA DIREITA -->
+            <div class="right-column">
+
+                <!-- ESTOQUE -->
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>📊 Controle de estoque</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <!-- PESQUISA -->
+                        <div class="search-bar">
+
+                            <input
+                                type="text"
+                                class="search-input"
+                                id="buscaMed"
+                                placeholder="🔍 Buscar medicamento..."
+                                oninput="filtrarTabela()">
+
+                        </div>
+
+                        <!-- FILTROS -->
+                        <div class="filters">
+
+                            <select
+                                class="form-control"
+                                id="filtroCategoria"
+                                onchange="filtrarTabela()">
+
+                                <option value="">Todas as categorias</option>
+                                <option value="analgesico/antipiretico">Analgésico / Antipirético</option>
+                                <option value="antibiotico">Antibiótico</option>
+                                <option value="anti-inflamatorio">Anti-inflamatório</option>
+                                <option value="antialergico">Antialérgico</option>
+                                <option value="protetor gastrico">Protetor gástrico</option>
+                                <option value="antiespasmodico">Antiespasmódico</option>
+                                <option value="antiemetico">Antiemético</option>
+                                <option value="solucao">Solução</option>
+                                <option value="vitaminas/suplemento">Vitaminas / Suplemento</option>
+                                <option value="geral">Geral</option>
+
+                            </select>
+
+                            <select
+                                class="form-control"
+                                id="filtroStatus"
+                                onchange="filtrarTabela()">
+
+                                <option value="">Todos os estoques</option>
+                                <option value="normal">Normal</option>
+                                <option value="baixo">Estoque baixo</option>
+                                <option value="zerado">Esgotado</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- TABELA -->
+                        <div class="table-wrapper">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>Medicamento</th>
+                                        <th>Quantidade</th>
+                                        <th>Status</th>
+                                        <th>Entrada</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tabelaMedicamentos">
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <div id="estadoTabela" class="empty-state" style="display: none;">
+                            <div class="empty-icon">🔎</div>
+                            <p>Nenhum medicamento encontrado.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+
+        // =====================================================
+        // CONFIGURAÇÕES
+        // =====================================================
+
+        const CHAVE_ESTOQUE = "hospital_sao_joao_estoque";
+        const CHAVE_HISTORICO = "hospital_sao_joao_historico";
+
+        const LIMITE_ESTOQUE_BAIXO = 10;
+
+        let medicamentos = [];
+        let historico = [];
+
+        // =====================================================
+        // CARREGAMENTO DOS DADOS
+        // =====================================================
+
+        function carregarDados() {
+
+            try {
+
+                medicamentos = JSON.parse(
+                    localStorage.getItem(CHAVE_ESTOQUE)
+                ) || [];
+
+                historico = JSON.parse(
+                    localStorage.getItem(CHAVE_HISTORICO)
+                ) || [];
+
+            } catch (erro) {
+
+                medicamentos = [];
+                historico = [];
+
+                console.error("Erro ao carregar dados:", erro);
+
+            }
+
+            atualizarTudo();
+
+        }
+
+        // =====================================================
+        // SALVAMENTO
+        // =====================================================
+
+        function salvarDados() {
+
+            localStorage.setItem(
+                CHAVE_ESTOQUE,
+                JSON.stringify(medicamentos)
+            );
+
+            localStorage.setItem(
+                CHAVE_HISTORICO,
+                JSON.stringify(historico)
+            );
+
+        }
+
+        // =====================================================
+        // ALTERNAR ABAS
+        // =====================================================
+
+        function setTab(tab) {
+
+            const painelNovo = document.getElementById("painelNovo");
+            const painelRepor = document.getElementById("painelRepor");
+
+            const tabNovo = document.getElementById("tabNovo");
+            const tabRepor = document.getElementById("tabRepor");
+
+            if (tab === "novo") {
+
+                painelNovo.style.display = "block";
+                painelRepor.style.display = "none";
+
+                tabNovo.classList.add("active");
+                tabRepor.classList.remove("active");
+
+            } else {
+
+                painelNovo.style.display = "none";
+                painelRepor.style.display = "block";
+
+                tabNovo.classList.remove("active");
+                tabRepor.classList.add("active");
+
+                atualizarSelectMedicamentos();
+
+            }
+
+        }
+
+        // =====================================================
+        // REGISTRAR HISTÓRICO
+        // =====================================================
+
+        function registrarHistorico(medicamento, quantidade, tipo, observacao = "") {
+
+            historico.unshift({
+
+                id: Date.now(),
+
+                medicamento: medicamento.nome,
+
+                quantidade: quantidade,
+
+                unidade: medicamento.unidade,
+
+                tipo: tipo,
+
+                observacao: observacao,
+
+                data: new Date().toISOString()
+
+            });
+
+            // Mantém somente os últimos 100 registros
+            historico = historico.slice(0, 100);
+
+        }
+
+        // =====================================================
+        // CADASTRAR NOVO MEDICAMENTO
+        // =====================================================
+
+        function darEntrada() {
+
+            const nome = document
+                .getElementById("emNome")
+                .value
+                .trim();
+
+            const quantidade = Number(
+                document.getElementById("emQtd").value
+            );
+
+            const unidade = document
+                .getElementById("emUnidade")
+                .value
+                .trim();
+
+            const categoria = document
+                .getElementById("emCategoria")
+                .value;
+
+            if (!nome) {
+
+                alert("Informe o nome do medicamento.");
+
+                document.getElementById("emNome").focus();
+
+                return;
+
+            }
+
+            if (!Number.isInteger(quantidade) || quantidade < 1) {
+
+                alert("Informe uma quantidade válida, maior que zero.");
+
+                document.getElementById("emQtd").focus();
+
+                return;
+
+            }
+
+            // Verifica duplicidade
+            const existe = medicamentos.some(
+                med => med.nome.toLowerCase() === nome.toLowerCase()
+            );
+
+            if (existe) {
+
+                alert(
+                    "Este medicamento já está cadastrado.\n\n" +
+                    "Utilize a aba 'Repor existente' para adicionar quantidade."
+                );
+
+                return;
+
+            }
+
+            const medicamento = {
+
+                id: Date.now(),
+
+                nome: nome,
+
+                quantidade: quantidade,
+
+                unidade: unidade,
+
+                categoria: categoria,
+
+                criadoEm: new Date().toISOString(),
+
+                atualizadoEm: new Date().toISOString()
+
+            };
+
+            medicamentos.push(medicamento);
+
+            registrarHistorico(
+                medicamento,
+                quantidade,
+                "Cadastro inicial"
+            );
+
+            salvarDados();
+
+            atualizarTudo();
+
+            // Limpa o formulário
+            document.getElementById("emNome").value = "";
+
+            document.getElementById("emQtd").value = 10;
+
+            document.getElementById("emNome").focus();
+
+            alert("Medicamento cadastrado com sucesso!");
+
+        }
+
+        // =====================================================
+        // REPOR ESTOQUE
+        // =====================================================
+
+        function reporEstoque() {
+
+            const id = Number(
+                document.getElementById("emMedicamentoExistente").value
+            );
+
+            const quantidade = Number(
+                document.getElementById("emQtdRepor").value
+            );
+
+            const observacao = document
+                .getElementById("emObs")
+                .value
+                .trim();
+
+            const medicamento = medicamentos.find(
+                med => med.id === id
+            );
+
+            if (!medicamento) {
+
+                alert("Selecione um medicamento.");
+
+                return;
+
+            }
+
+            if (!Number.isInteger(quantidade) || quantidade < 1) {
+
+                alert("Informe uma quantidade válida.");
+
+                document.getElementById("emQtdRepor").focus();
+
+                return;
+
+            }
+
+            medicamento.quantidade += quantidade;
+
+            medicamento.atualizadoEm = new Date().toISOString();
+
+            registrarHistorico(
+                medicamento,
+                quantidade,
+                "Reposição",
+                observacao
+            );
+
+            salvarDados();
+
+            atualizarTudo();
+
+            document.getElementById("emQtdRepor").value = "";
+
+            document.getElementById("emObs").value = "";
+
+            alert(
+                "Reposição realizada com sucesso!\n\n" +
+                medicamento.nome +
+                "\nQuantidade adicionada: " +
+                quantidade +
+                " " +
+                medicamento.unidade +
+                "\nEstoque atual: " +
+                medicamento.quantidade +
+                " " +
+                medicamento.unidade
+            );
+
+        }
+
+        // =====================================================
+        // EXCLUIR MEDICAMENTO
+        // =====================================================
+
+        function excluirMedicamento(id) {
+
+            const medicamento = medicamentos.find(
+                med => med.id === id
+            );
+
+            if (!medicamento) return;
+
+            const confirmar = confirm(
+                "Deseja realmente excluir este medicamento?\n\n" +
+                medicamento.nome +
+                "\nQuantidade atual: " +
+                medicamento.quantidade +
+                " " +
+                medicamento.unidade +
+                "\n\nEssa ação não poderá ser desfeita."
+            );
+
+            if (!confirmar) return;
+
+            medicamentos = medicamentos.filter(
+                med => med.id !== id
+            );
+
+            salvarDados();
+
+            atualizarTudo();
+
+        }
+
+        // =====================================================
+        // ATUALIZAR SELECT DE REPOSIÇÃO
+        // =====================================================
+
+        function atualizarSelectMedicamentos() {
+
+            const select = document.getElementById(
+                "emMedicamentoExistente"
+            );
+
+            const valorAtual = select.value;
+
+            select.innerHTML = `
+                <option value="">Selecione um medicamento</option>
+            `;
+
+            medicamentos.forEach(med => {
+
+                const option = document.createElement("option");
+
+                option.value = med.id;
+
+                option.textContent =
+                    med.nome +
+                    " — " +
+                    med.quantidade +
+                    " " +
+                    med.unidade;
+
+                select.appendChild(option);
+
+            });
+
+            // Tenta preservar a seleção anterior
+            if (
+                medicamentos.some(
+                    med => String(med.id) === valorAtual
+                )
+            ) {
+
+                select.value = valorAtual;
+
+            }
+
+        }
+
+        // =====================================================
+        // ESTATÍSTICAS
+        // =====================================================
+
+        function atualizarEstatisticas() {
+
+            const total = medicamentos.length;
+
+            const normal = medicamentos.filter(
+                med => med.quantidade >= LIMITE_ESTOQUE_BAIXO
+            ).length;
+
+            const baixo = medicamentos.filter(
+                med =>
+                    med.quantidade > 0 &&
+                    med.quantidade < LIMITE_ESTOQUE_BAIXO
+            ).length;
+
+            const zerado = medicamentos.filter(
+                med => med.quantidade === 0
+            ).length;
+
+            document.getElementById("statItens").textContent = total;
+
+            document.getElementById("statOk").textContent = normal;
+
+            document.getElementById("statBaixo").textContent = baixo;
+
+            document.getElementById("statZerado").textContent = zerado;
+
+            atualizarAlerta();
+
+        }
+
+        // =====================================================
+        // ALERTA DE ESTOQUE
+        // =====================================================
+
+        function atualizarAlerta() {
+
+            const alerta = document.getElementById("alertaEstoque");
+
+            const texto = document.getElementById("alertaTexto");
+
+            const baixos = medicamentos.filter(
+                med =>
+                    med.quantidade > 0 &&
+                    med.quantidade < LIMITE_ESTOQUE_BAIXO
+            );
+
+            const zerados = medicamentos.filter(
+                med => med.quantidade === 0
+            );
+
+            if (baixos.length === 0 && zerados.length === 0) {
+
+                alerta.style.display = "none";
+
+                return;
+
+            }
+
+            alerta.style.display = "block";
+
+            let mensagem = "";
+
+            if (zerados.length > 0) {
+
+                mensagem +=
+                    zerados.length +
+                    " medicamento(s) esgotado(s): " +
+                    zerados.map(med => med.nome).join(", ") +
+                    ". ";
+
+            }
+
+            if (baixos.length > 0) {
+
+                mensagem +=
+                    baixos.length +
+                    " medicamento(s) com estoque baixo: " +
+                    baixos.map(med => med.nome).join(", ") +
+                    ".";
+
+            }
+
+            texto.textContent = mensagem;
+
+        }
+
+        // =====================================================
+        // STATUS DO ESTOQUE
+        // =====================================================
+
+        function obterStatus(quantidade) {
+
+            if (quantidade === 0) {
+
+                return {
+
+                    texto: "Esgotado",
+
+                    classe: "badge-zero"
+
+                };
+
+            }
+
+            if (quantidade < LIMITE_ESTOQUE_BAIXO) {
+
+                return {
+
+                    texto: "Estoque baixo",
+
+                    classe: "badge-low"
+
+                };
+
+            }
+
+            return {
+
+                texto: "Normal",
+
+                classe: "badge-ok"
+
+            };
+
+        }
+
+        // =====================================================
+        // RENDERIZAR TABELA
+        // =====================================================
+
+        function renderizarTabela(lista) {
+
+            const tabela = document.getElementById(
+                "tabelaMedicamentos"
+            );
+
+            const estado = document.getElementById(
+                "estadoTabela"
+            );
+
+            tabela.innerHTML = "";
+
+            if (lista.length === 0) {
+
+                estado.style.display = "block";
+
+                return;
+
+            }
+
+            estado.style.display = "none";
+
+            lista.forEach(med => {
+
+                const status = obterStatus(med.quantidade);
+
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+
+                    <td>
+                        <div class="med-name">
+                            ${escaparHTML(med.nome)}
+                        </div>
+
+                        <div class="med-category">
+                            ${escaparHTML(
+                                formatarCategoria(med.categoria)
+                            )}
+                        </div>
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${med.quantidade}
+                        </strong>
+
+                        <span style="color: #64748b;">
+                            ${escaparHTML(med.unidade)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge ${status.classe}">
+                            ${status.texto}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${formatarData(med.atualizadoEm)}
+                    </td>
+
+                    <td>
+                        <button
+                            class="btn-danger"
+                            onclick="excluirMedicamento(${med.id})">
+                            Excluir
+                        </button>
+                    </td>
+
+                `;
+
+                tabela.appendChild(tr);
+
+            });
+
+        }
+
+        // =====================================================
+        // PESQUISA E FILTROS
+        // =====================================================
+
+        function filtrarTabela() {
+
+            const busca = document
+                .getElementById("buscaMed")
+                .value
+                .toLowerCase()
+                .trim();
+
+            const categoria = document
+                .getElementById("filtroCategoria")
+                .value;
+
+            const statusFiltro = document
+                .getElementById("filtroStatus")
+                .value;
+
+            const filtrados = medicamentos.filter(med => {
+
+                const correspondeBusca =
+                    med.nome.toLowerCase().includes(busca) ||
+                    med.categoria.toLowerCase().includes(busca);
+
+                const correspondeCategoria =
+                    !categoria ||
+                    med.categoria === categoria;
+
+                const status = obterStatus(med.quantidade);
+
+                let correspondeStatus = true;
+
+                if (statusFiltro === "normal") {
+
+                    correspondeStatus =
+                        med.quantidade >= LIMITE_ESTOQUE_BAIXO;
+
+                } else if (statusFiltro === "baixo") {
+
+                    correspondeStatus =
+                        med.quantidade > 0 &&
+                        med.quantidade < LIMITE_ESTOQUE_BAIXO;
+
+                } else if (statusFiltro === "zerado") {
+
+                    correspondeStatus =
+                        med.quantidade === 0;
+
+                }
+
+                return (
+                    correspondeBusca &&
+                    correspondeCategoria &&
+                    correspondeStatus
+                );
+
+            });
+
+            renderizarTabela(filtrados);
+
+        }
+
+        // =====================================================
+        // HISTÓRICO
+        // =====================================================
+
+        function carregarHistoricoEntradas() {
+
+            const container = document.getElementById(
+                "historicoEntradas"
+            );
+
+            container.innerHTML = "";
+
+            if (historico.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Nenhuma entrada registrada ainda.</p>
+                    </div>
+                `;
+
+                return;
+
+            }
+
+            // Mostra as últimas 10 entradas
+            const ultimasEntradas = historico.slice(0, 10);
+
+            ultimasEntradas.forEach(item => {
+
+                const div = document.createElement("div");
+
+                div.className = "historico-item";
+
+                div.innerHTML = `
+
+                    <div>
+
+                        <div class="historico-nome">
+                            ${escaparHTML(item.medicamento)}
+                        </div>
+
+                        <div class="historico-info">
+
+                            ${formatarDataCompleta(item.data)}
+
+                            ${item.observacao
+                                ? "<br>Observação: " +
+                                  escaparHTML(item.observacao)
+                                : ""
+                            }
+
+                        </div>
+
+                        <span class="historico-tipo">
+                            ${escaparHTML(item.tipo)}
+                        </span>
+
+                    </div>
+
+                    <div class="historico-qtd">
+                        +${item.quantidade}
+                        ${escaparHTML(item.unidade)}
+                    </div>
+
+                `;
+
+                container.appendChild(div);
+
+            });
+
+        }
+
+        // =====================================================
+        // ATUALIZAÇÃO GERAL
+        // =====================================================
+
+        function atualizarTudo() {
+
+            atualizarEstatisticas();
+
+            atualizarSelectMedicamentos();
+
+            filtrarTabela();
+
+            carregarHistoricoEntradas();
+
+        }
+
+        // =====================================================
+        // FORMATAR CATEGORIA
+        // =====================================================
+
+        function formatarCategoria(categoria) {
+
+            const categorias = {
+
+                "analgesico/antipiretico":
+                    "Analgésico / Antipirético",
+
+                "antibiotico":
+                    "Antibiótico",
+
+                "anti-inflamatorio":
+                    "Anti-inflamatório",
+
+                "antialergico":
+                    "Antialérgico",
+
+                "protetor gastrico":
+                    "Protetor gástrico",
+
+                "antiespasmodico":
+                    "Antiespasmódico",
+
+                "antiemetico":
+                    "Antiemético",
+
+                "solucao":
+                    "Solução",
+
+                "vitaminas/suplemento":
+                    "Vitaminas / Suplemento",
+
+                "geral":
+                    "Geral"
+
+            };
+
+            return categorias[categoria] || categoria;
+
+        }
+
+        // =====================================================
+        // FORMATAR DATA
+        // =====================================================
+
+        function formatarData(data) {
+
+            if (!data) return "-";
+
+            return new Date(data).toLocaleDateString("pt-BR");
+
+        }
+
+        function formatarDataCompleta(data) {
+
+            if (!data) return "-";
+
+            return new Date(data).toLocaleString("pt-BR");
+
+        }
+
+        // =====================================================
+        // SEGURANÇA HTML
+        // =====================================================
+
+        function escaparHTML(texto) {
+
+            return String(texto)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+        // =====================================================
+        // INICIALIZAÇÃO
+        // =====================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            carregarDados
+        );
+
+    </script>
+
+</body>
+
+</html>

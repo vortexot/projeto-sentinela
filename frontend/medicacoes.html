@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prescrições — Hospital São Lucas</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body data-pagina="medicacoes">
+<main class="page" style="max-width:720px">
+  <div class="page-head">
+    <h1>Medicações prescritas</h1>
+    <p>Histórico das consultas realizadas, da mais recente para a mais antiga.</p>
+  </div>
+  <div id="lista"><div class="card vazio">Carregando...</div></div>
+</main>
+
+<script src="js/app.js"></script>
+<script>
+  const esc = App.esc;
+  const data = d => d ? new Date(d).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "";
+
+  fetch("/medicacoes")
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(lista => {
+      const el = document.getElementById("lista");
+      if (!lista.length) { el.innerHTML = '<div class="card vazio">Nenhuma medicação prescrita.</div>'; return; }
+      el.innerHTML = lista.slice().reverse().map(c => `
+        <article class="item">
+          <h3>${esc(c.paciente)} <span class="badge">${esc(c.medicacao || "—")}</span></h3>
+          <p><b>Diagnóstico:</b> ${esc(c.diagnostico || "—")}</p>
+          <p><b>Observações:</b> ${esc(c.obs || "Nenhuma")}</p>
+          <p style="color:var(--muted);font-size:12px">${data(c.createdAt)}</p>
+        </article>`).join("");
+    })
+    .catch(() => {
+      document.getElementById("lista").innerHTML = '<div class="card vazio">Não foi possível carregar as prescrições.</div>';
+    });
+</script>
+</body>
+</html>

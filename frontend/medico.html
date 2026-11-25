@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Médico - Hospital São Lucas</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #dbeafe, #ecfeff, #dcfce7);
+            color: #1f2937;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1050px;
+            margin: auto;
+            padding: 35px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,.12);
+            border: 1px solid #ddd;
+        }
+
+        /* CABEÇALHO */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        h2 {
+            color: #0f766e;
+            font-size: 26px;
+        }
+
+        .subtitulo {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        /* CONSULTÓRIO */
+
+        .consultorio-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #ecfeff, #f0fdfa);
+            border: 1px solid #99f6e4;
+            border-radius: 12px;
+        }
+
+        .consultorio-input label {
+            color: #0f766e;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .consultorio-input input {
+            width: 75px;
+            height: 40px;
+            text-align: center;
+            font-size: 17px;
+            font-weight: bold;
+            padding: 5px;
+            border: 1px solid #99f6e4;
+            border-radius: 8px;
+            outline: none;
+            color: #0f766e;
+        }
+
+        .consultorio-input input:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20,184,166,.15);
+        }
+
+        .consultorio-input span {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* SEÇÃO DE TRIAGENS */
+
+        .secao-titulo {
+            color: #0f766e;
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        #triagens {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        /* CARDS */
+
+        .card {
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #d1fae5;
+            border-radius: 13px;
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #14b8a6;
+            box-shadow: 0 8px 20px rgba(20,184,166,.10);
+        }
+
+        .card h3 {
+            color: #0f766e;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        .card b {
+            color: #374151;
+        }
+
+        /* CLASSIFICAÇÃO DE RISCO */
+
+        .risco {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .risco.vermelho {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        .risco.amarelo {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .risco.verde {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* BOTÕES */
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: .3s;
+        }
+
+        .btn-atender {
+            width: 100%;
+            height: 43px;
+            margin-top: 12px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-atender:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(15,118,110,.25);
+        }
+
+        /* DIVISÓRIA */
+
+        hr {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 30px 0;
+        }
+
+        /* FORMULÁRIO DE CONSULTA */
+
+        .formulario {
+            padding: 25px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+        }
+
+        .formulario h3 {
+            color: #0f766e;
+            font-size: 21px;
+            margin-bottom: 22px;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .campo input,
+        .campo select,
+        .campo textarea {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #f8fafc;
+            font-size: 15px;
+            color: #1f2937;
+            outline: none;
+            transition: .3s;
+        }
+
+        .campo input,
+        .campo select {
+            height: 50px;
+        }
+
+        .campo textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .campo input:focus,
+        .campo select:focus,
+        .campo textarea:focus {
+            border-color: #14b8a6;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(20,184,166,.15);
+        }
+
+        .campo input::placeholder,
+        .campo textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .campo input[readonly] {
+            background: #ecfeff;
+            color: #0f766e;
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        /* SALVAR */
+
+        .btn-salvar {
+            width: 100%;
+            height: 52px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            color: white;
+            font-size: 17px;
+        }
+
+        .btn-salvar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(15,118,110,.3);
+        }
+
+        .btn-salvar:active,
+        .btn-atender:active {
+            transform: scale(.98);
+        }
+
+        /* MENSAGENS */
+
+        .mensagem-vazia {
+            grid-column: 1 / -1;
+            padding: 30px;
+            background: #f8fafc;
+            border: 1px dashed #99f6e4;
+            border-radius: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        /* RODAPÉ */
+
+        .rodape {
+            margin-top: 25px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media(max-width: 650px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 22px;
+                border-radius: 15px;
+            }
+
+            .cabecalho {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .consultorio-input {
+                align-items: flex-start;
+            }
+
+            #triagens {
+                grid-template-columns: 1fr;
+            }
+
+            .formulario {
+                padding: 18px;
+            }
+        }
+
+        @media(max-width: 380px) {
+            .container {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 19px;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="css/shell.css">
+<script src="js/app.js" defer></script>
+</head>
+
+<body data-pagina="medico">
+
+<div class="container">
+
+    <!-- CABEÇALHO -->
+
+    <div class="cabecalho">
+        <div>
+            <h2>🩺 Painel Médico</h2>
+            <p class="subtitulo">Hospital São Lucas | Gestão de Consultas</p>
+        </div>
+    </div>
+
+    <!-- CONSULTÓRIO -->
+
+    <div class="consultorio-input">
+
+        <label for="consultorio-num">
+            Meu consultório:
+        </label>
+
+        <input
+            type="text"
+            id="consultorio-num"
+            value="01"
+        >
+
+        <span>
+            Este número será exibido na TV ao chamar o paciente.
+        </span>
+
+    </div>
+
+    <!-- TRIAGENS -->
+
+    <h3 class="secao-titulo">
+        Pacientes aguardando atendimento
+    </h3>
+
+    <div id="triagens">
+        <div class="mensagem-vazia">
+            Carregando pacientes...
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- CONSULTA -->
+
+    <div class="formulario">
+
+        <h3>Registro da consulta</h3>
+
+        <div class="campo">
+            <label for="paciente">Paciente selecionado</label>
+            <input
+                id="paciente"
+                placeholder="Selecione um paciente em Atender"
+                readonly
+            >
+        </div>
+
+        <div class="campo">
+            <label for="diagnostico">Diagnóstico</label>
+            <input
+                id="diagnostico"
+                placeholder="Informe o diagnóstico"
+            >
+        </div>
+
+        <div class="campo">
+            <label for="medicacao">Medicação</label>
+
+            <select id="medicacao">
+                <option value="">Selecione a medicação</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="obs">Observações</label>
+
+            <textarea
+                id="obs"
+                placeholder="Digite as observações da consulta..."
+            ></textarea>
+        </div>
+
+        <button class="btn-salvar" onclick="salvar()">
+            💾 Salvar Consulta
+        </button>
+
+    </div>
+
+    <div class="rodape">
+        © 2026 Hospital São Lucas
+    </div>
+
+</div>
+
+<script>
+
+    let triagensCarregadas = [];
+
+    // CARREGAR TRIAGENS
+
+    function carregar() {
+
+        fetch("/triagens")
+            .then(r => {
+                if (!r.ok) throw new Error("Erro ao buscar triagens.");
+                return r.json();
+            })
+            .then(data => {
+
+                if (!Array.isArray(data)) {
+                    throw new Error("O servidor retornou uma lista de triagens inválida.");
+                }
+
+                triagensCarregadas = data;
+
+                const div = document.getElementById("triagens");
+                div.innerHTML = "";
+
+                if (data.length === 0) {
+                    div.innerHTML = `
+                        <div class="mensagem-vazia">
+                            Nenhum paciente aguardando atendimento.
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach((t, index) => {
+
+                    const card = document.createElement("div");
+                    card.className = "card";
+
+                    const titulo = document.createElement("h3");
+                    titulo.textContent = t.nome || "Paciente sem nome";
+
+                    // O banco antigo pode usar "sintomas" e "temp".
+                    const sintomaTexto = t.sintoma || t.sintomas || "Não informado";
+                    const temperaturaValor = t.temperatura ?? t.temp;
+
+                    const sintoma = document.createElement("p");
+                    sintoma.innerHTML = "<b>Sintoma:</b> ";
+                    sintoma.appendChild(document.createTextNode(sintomaTexto));
+
+                    const temperatura = document.createElement("p");
+                    temperatura.innerHTML = "<b>Temperatura:</b> ";
+                    temperatura.appendChild(document.createTextNode(
+                        temperaturaValor !== null && temperaturaValor !== undefined && temperaturaValor !== ""
+                            ? `${temperaturaValor}°C`
+                            : "Não informada"
+                    ));
+
+                    const risco = document.createElement("p");
+                    const riscoSpan = document.createElement("span");
+
+                    const nivel = ["vermelho", "amarelo", "verde"].includes(t.risco)
+                        ? t.risco
+                        : "";
+
+                    riscoSpan.className = "risco " + nivel;
+                    riscoSpan.textContent = t.risco || "Não classificado";
+                    risco.appendChild(riscoSpan);
+
+                    const alergia = document.createElement("p");
+                    alergia.innerHTML = "<b>Alergia:</b> ";
+                    alergia.appendChild(document.createTextNode(t.alergia || "Nenhuma"));
+
+                    const observacao = document.createElement("p");
+                    observacao.innerHTML = "<b>Observação:</b> ";
+                    observacao.appendChild(document.createTextNode(t.observacao || "Nenhuma"));
+
+                    const botao = document.createElement("button");
+                    botao.className = "btn-atender";
+                    botao.textContent = "Atender paciente";
+                    botao.onclick = () => selecionar(index);
+
+                    card.appendChild(titulo);
+                    card.appendChild(sintoma);
+                    card.appendChild(temperatura);
+                    card.appendChild(risco);
+                    card.appendChild(alergia);
+                    card.appendChild(observacao);
+                    card.appendChild(botao);
+
+                    div.appendChild(card);
+
+                });
+
+            })
+            .catch(erro => {
+
+                console.error(erro);
+
+                document.getElementById("triagens").innerHTML = `
+                    <div class="mensagem-vazia">
+                        ❌ Erro ao carregar as triagens.
+                    </div>
+                `;
+
+            });
+
+    }
+
+
+    // SELECIONAR PACIENTE
+
+    function selecionar(index) {
+
+        const t = triagensCarregadas[index];
+
+        if (!t) return;
+
+        document.getElementById("paciente").value = t.nome || "";
+
+        fetch("/tv/chamar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                localTipo: "CONSULTÓRIO",
+                localNumero: document.getElementById("consultorio-num").value || "01",
+                paciente: t.nome
+            })
+        }).catch(() => alert("⚠️ Não foi possível chamar o paciente na TV."));
+        document.getElementById("obs").value = t.observacao || "";
+
+        if (t.alergia && t.alergia !== "Nenhuma") {
+            alert("⚠️ Paciente possui alergia: " + t.alergia);
+        }
+
+        document.querySelector(".formulario").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+
+    // CARREGAR MEDICAÇÕES
+
+    function carregarMedicacoes() {
+
+        fetch("/lista-medicacoes")
+            .then(r => {
+                if (!r.ok) throw new Error("Erro ao buscar medicações.");
+                return r.json();
+            })
+            .then(data => {
+
+                if (!Array.isArray(data)) {
+                    throw new Error("Lista de medicações inválida.");
+                }
+
+                const select = document.getElementById("medicacao");
+
+                select.innerHTML = `
+                    <option value="">Selecione a medicação</option>
+                `;
+
+                data.forEach(med => {
+
+                    const option = document.createElement("option");
+                    option.value = med;
+                    option.textContent = med;
+
+                    select.appendChild(option);
+
+                });
+
+            })
+            .catch(erro => {
+                console.error("Erro ao carregar medicações:", erro);
+            });
+
+    }
+
+
+    // SALVAR CONSULTA
+
+    function salvar() {
+
+        const paciente = document.getElementById("paciente").value;
+        const diagnostico = document.getElementById("diagnostico").value.trim();
+        const medicacao = document.getElementById("medicacao").value;
+        const obs = document.getElementById("obs").value.trim();
+
+        if (!paciente) {
+            alert("Selecione um paciente clicando em Atender.");
+            return;
+        }
+
+        if (!diagnostico) {
+            alert("Informe o diagnóstico.");
+            return;
+        }
+
+        if (!medicacao) {
+            alert("Selecione uma medicação.");
+            return;
+        }
+
+        fetch("/consulta", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                paciente,
+                diagnostico,
+                medicacao,
+                obs
+            })
+        })
+        .then(r => {
+            if (!r.ok) throw new Error("Erro ao salvar consulta.");
+            return r.json();
+        })
+        .then(() => {
+
+            alert("✅ Consulta salva com sucesso!");
+
+            document.getElementById("paciente").value = "";
+            document.getElementById("diagnostico").value = "";
+            document.getElementById("medicacao").value = "";
+            document.getElementById("obs").value = "";
+
+            carregar();
+
+        })
+        .catch(erro => {
+
+            console.error(erro);
+            alert("❌ Não foi possível salvar a consulta.");
+
+        });
+
+    }
+
+
+    // INICIALIZAÇÃO
+
+    carregar();
+    carregarMedicacoes();
+
+</script>
+
+</body>
+</html>
